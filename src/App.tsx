@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import {TaskType, Todolist} from "./Todolist";
 import {v1} from "uuid";
+import {AddItemForm} from "./AddItemForm";
 
 export type filterType = "All"|"Active"|'Complited'
 type TodolistType ={
@@ -28,14 +29,14 @@ function App() {
 
     const [tasks, setTasks]= useState<TasksStateType>({
         [todoListID_1]:[
-            {id: v1(), name: "CSS & HTML", isDone: true},
-            {id: v1(), name: "JS", isDone: false},
-            {id: v1(), name: "React", isDone: true},
+            {id: v1(), title: "CSS & HTML", isDone: true},
+            {id: v1(), title: "JS", isDone: false},
+            {id: v1(), title: "React", isDone: true},
         ],
         [todoListID_2]: [
-            {id:  v1(), name: "Lord of rings", isDone: true},
-            {id:  v1(), name: "Bolein Sisters", isDone: false},
-            {id:  v1(), name: "Omen", isDone: true},
+            {id:  v1(), title: "Lord of rings", isDone: true},
+            {id:  v1(), title: "Bolein Sisters", isDone: false},
+            {id:  v1(), title: "Omen", isDone: true},
         ],
     })
 
@@ -52,7 +53,7 @@ function App() {
 
     //добавление тасок
     function addTasks(trimedValue:string, todolistID: string){
-      let newTask = {id:v1(), name:trimedValue, isDone:false}
+      let newTask = {id:v1(), title:trimedValue, isDone:false}
       tasks[todolistID] = [newTask,...tasks[todolistID] ]
         setTasks({...tasks})
     }
@@ -62,13 +63,30 @@ function App() {
         tasks[todolistID] = tasks[todolistID].map( t=> t.id===taskID ? {...t, isDone}: t)
         setTasks({...tasks})
     }
-
+    //изменение названия тасок
+    function changeTaskTitle (taskID:string, title: string, todolistID: string){
+        tasks[todolistID] = tasks[todolistID].map( t=> t.id===taskID? {...t, title}: t)
+        setTasks({...tasks})}
     //удаление todoList
     function removeTodoList(todolistID: string){
         setTodolist(todoList.filter( t=> t.id !== todolistID))
         delete tasks[todolistID]
     }
-
+    //добавление ToDoList
+    function addTodolist (title:string){
+        const newTodolistID=v1()
+        const newTodolist:TodolistType ={
+        id: newTodolistID,
+        title,
+        filter: "All"
+        }
+        setTodolist([...todoList, newTodolist])
+        setTasks({[newTodolistID]:[],...tasks})
+    }
+    //изменение назв ToDoList
+    function changeTodolistTitle(title: string, todolistID: string){
+        setTodolist( todoList.map(t=> t.id === todolistID ? {...t, title} : t) )
+    }
     // фильтруем таски для 3х кнопок
     const getTasksForRender =(todoList: TodolistType)=>{
         switch (todoList.filter) {
@@ -80,7 +98,6 @@ function App() {
                 return tasks[todoList.id]
         }
     }
-
     // рисуем компоненту (просто вынесена для читабельности)
     const todolistComponents = todoList.map(tl=> {
             return (<Todolist id={tl.id}
@@ -93,11 +110,14 @@ function App() {
                               ChangeStatusIsDone={ChangeStatusIsDone}
                               filter={tl.filter}
                               removeTodoList={removeTodoList}
+                              changeTaskTitle ={changeTaskTitle}
+                              changeTodolistTitle={changeTodolistTitle}
             />)
         })
 
   return (
       <div className={'App'}>
+          <AddItemForm addItem={addTodolist}/>
           {todolistComponents}
       </div>
   );
