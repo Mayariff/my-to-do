@@ -7,7 +7,7 @@ import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography}
 import {Menu} from "@material-ui/icons";
 
 export type filterType = "All"|"Active"|'Complited'
-type TodolistType ={
+export type TodolistType ={
     id: string
     title: string
     filter: filterType
@@ -73,6 +73,7 @@ function App() {
     function removeTodoList(todolistID: string){
         setTodolist(todoList.filter( t=> t.id !== todolistID))
         delete tasks[todolistID]
+        setTasks({...tasks})
     }
     //добавление ToDoList
     function addTodolist (title:string){
