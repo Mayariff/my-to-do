@@ -1,6 +1,6 @@
 import {filterType, TodolistType} from "../App";
 import {v1} from "uuid";
-import {AddTaskAT, RemoveTaskAT} from "./task-reduser";
+
 
 export enum ACTION_TYPE {
     remove_todolist = "REMOVE-TODOLIST",
@@ -32,10 +32,12 @@ type ChangeFilterAT = {
 }
 export type ActionType = RemoveTodolistAT | AddTodolistAT | ChangeTodolistTitleAT | ChangeFilterAT
 
-const todolistsReducer = (todoLists: Array<TodolistType>, action: ActionType): Array<TodolistType> => {
+let initialState:Array<TodolistType> =[]
+
+const todolistsReducer = (state: Array<TodolistType>= initialState, action: ActionType): Array<TodolistType> => {
     switch (action.type) {
         case ACTION_TYPE.remove_todolist:
-            return todoLists.filter(t => t.id !== action.payload.todolistID)
+            return state.filter(t => t.id !== action.payload.todolistID)
         case ACTION_TYPE.add_todolist:
             //const newTodolistID = v1()
             const newTodolist: TodolistType = {
@@ -43,16 +45,17 @@ const todolistsReducer = (todoLists: Array<TodolistType>, action: ActionType): A
                 title: action.payload.title,
                 filter: "All"
             }
-        return [...todoLists, newTodolist]
+        return [...state, newTodolist]
 
         case ACTION_TYPE.change_todolistTitle:
-            return todoLists.map(t => t.id === action.payload.todolistID ? {...t, title: action.payload.title} : t)
+            return state.map(t => t.id === action.payload.todolistID ? {...t, title: action.payload.title} : t)
         case ACTION_TYPE.change_filter:
-            return todoLists.map(t => t.id === action.payload.todolistID ? {...t, filter: action.payload.filter} : t)
+            return state.map(t => t.id === action.payload.todolistID ? {...t, filter: action.payload.filter} : t)
         default:
-            return todoLists
+            return state
     }
 };
+
 
 export default todolistsReducer;
 

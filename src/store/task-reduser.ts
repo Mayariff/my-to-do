@@ -41,15 +41,17 @@ type ChangeTaskTitleAT = {
 
 export type ActionType = AddTaskAT | ChangeTaskStatusAT | RemoveTaskAT |ChangeTaskTitleAT |AddTodolistAT |RemoveTodolistAT
 
-const tasksReducer = (tasks: TasksStateType, action: ActionType) => {
-       let CopyTasks = {...tasks}
+let initialState: TasksStateType = {}
+
+const tasksReducer = (state: TasksStateType = initialState, action: ActionType) => {
+       let CopyTasks = {...state}
     switch (action.type) {
         case ACTION_TYPE.add_task:
             let newTask = {id: v1(), title: action.payload.title, isDone: false}
             return {
-                ...tasks,
+                ...state,
                 [action.payload.todolistID]: [
-                    newTask, ...tasks[action.payload.todolistID]]
+                    newTask, ...state[action.payload.todolistID]]
             }
         case ACTION_TYPE.remove_task:
             CopyTasks[action.payload.todolistID] = CopyTasks[action.payload.todolistID].filter(t => action.payload.taskID !== t.id)
@@ -64,13 +66,13 @@ const tasksReducer = (tasks: TasksStateType, action: ActionType) => {
             CopyTasks[action.payload.todolistID] = CopyTasks[action.payload.todolistID].map( t=> t.id===action.payload.taskID? {...t, title: action.payload.title}: t)
             return CopyTasks
         case  "ADD_TODOLIST":
-            return {...tasks,
+            return {...state,
                 [action.payload.todolistID]: []}
         case "REMOVE-TODOLIST":
             delete CopyTasks[action.payload.todolistID]
             return CopyTasks
         default:
-            return tasks
+            return state
     }
 };
 
