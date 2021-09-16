@@ -1,3 +1,4 @@
+
 import React, {useReducer} from 'react';
 import './App.css';
 import {Todolist} from "./Todolist";
@@ -23,7 +24,7 @@ export type TodolistType ={
 
 
 
-function AppWithReducers() {
+/*function AppWithReducers() {
 
     const todoListID_1= v1()
     const todoListID_2= v1()
@@ -140,6 +141,6 @@ function AppWithReducers() {
             </Container>
         </div>
     );
-}
+}*/
 
-export default AppWithReducers;
+/*export default AppWithReducers;*/

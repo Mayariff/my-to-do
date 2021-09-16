@@ -1,3 +1,5 @@
+
+
 import React, {useState} from 'react';
 import './App.css';
 import {TaskType, Todolist} from "./Todolist";
@@ -18,7 +20,7 @@ export  type TasksStateType ={
     [key:string]: Array<TaskType>
 }
 
-
+/*
 function App() {
 
     const todoListID_1= v1()
@@ -116,7 +118,7 @@ function App() {
                               filter={tl.filter}
                               removeTodoList={removeTodoList}
                               changeTaskTitle ={changeTaskTitle}
-                              changeTodolistTitle={changeTodolistTitle}/>
+                              changeTodolistTitle={changeTodolistTitle} />
                 </Paper>
             </Grid>)
         })
@@ -149,3 +151,4 @@ function App() {
 }
 
 export default App;
+*/
