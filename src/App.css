@@ -1,26 +1,26 @@
 /*
 .App {
- padding: 20px;
+  padding: 30px;
   display: flex;
 }
 
 .App > div {
-  margin-left: 60px;
+  margin-right: 50px;
 }
 
 .error {
-    border: red 2px solid;
-}
-.errorMessage {
-    color: red;
+  border: red 1px solid;
 }
 
-.activeFilter {
-    background-color: darkslategray;
-    color: aquamarine;
+.error-message {
+  color: red;
 }
 
-.isDone {
-    opacity: 0.5;
-    text-decoration: line-through;
-}*/
+.active-filter {
+  background-color: aquamarine;
+}
+
+.is-done {
+  opacity: 0.5;
+}
+*/
