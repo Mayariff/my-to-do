@@ -10,7 +10,7 @@ import { FilterValuesType, TodolistDomainType } from '../todolists-reducer'
 import { useDispatch } from 'react-redux'
 import { fetchTasksTC } from '../tasks-reducer'
 
-type PropsType = {
+export type PropsType = {
     todolist: TodolistDomainType
     tasks: Array<TaskType>
     changeFilter: (value: FilterValuesType, todolistId: string) => void
