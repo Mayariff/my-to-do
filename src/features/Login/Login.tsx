@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import Grid from '@mui/material/Grid';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
@@ -7,27 +7,19 @@ import FormGroup from '@mui/material/FormGroup';
 import FormLabel from '@mui/material/FormLabel';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import {FormikErrors, useFormik} from "formik";
+import {useFormik} from "formik";
 import {useDispatch, useSelector} from "react-redux";
 import {loginTC} from "./login-reducer";
 import {AppRootStateType} from "../../app/store";
 import {Navigate} from "react-router-dom";
 import {LoginParamsType} from "../../api/todolists-api";
-
-
-
-type validateType ={
-    email?: string
-    password?: string
-    rememberMe?: boolean
-}
-
-
+import {fetchTodolistsTC} from "../TodolistsList/todolists-reducer";
 
 export const Login = () => {
 
   const dispatch = useDispatch()
    const isLoggedIn = useSelector<AppRootStateType, boolean>( state=> state.login.isLoggedIn)
+
 
         let formik = useFormik({
         initialValues: {
@@ -54,6 +46,15 @@ export const Login = () => {
             formik.resetForm()
         }
     })
+
+    useEffect(()=>{
+        if(!isLoggedIn){
+            return
+        }
+        dispatch(fetchTodolistsTC())
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[])
+
     if(isLoggedIn) {
         return <Navigate to={'/'} />
     }
