@@ -2,7 +2,7 @@ import { Dispatch } from 'redux'
 import { setAppStatusAC } from '../../app/app-reducer'
 import {authAPI, LoginParamsType} from "../../api/todolists-api";
 import {handleServerAppError, handleServerNetworkError} from "../../utils/error-utils";
-import {clearDataAC, ClearDataActionType} from "../TodolistsList/todolists-reducer";
+import {clearDataAC} from "../TodolistsList/todolists-reducer";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 const initialState = {
@@ -72,4 +72,4 @@ export const logoutTC = () => (dispatch: Dispatch<ActionsType>) => {
 
 
 // types
-type ActionsType = ReturnType<typeof setIsLoggedInAC> | any |ClearDataActionType
+type ActionsType = ReturnType<typeof setIsLoggedInAC> | any
