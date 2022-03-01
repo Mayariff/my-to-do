@@ -7,56 +7,72 @@ import FormGroup from '@mui/material/FormGroup';
 import FormLabel from '@mui/material/FormLabel';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import {useFormik} from "formik";
+import {FormikHelpers, FormikValues, useFormik} from "formik";
 import {useDispatch, useSelector} from "react-redux";
 import {loginTC} from "./login-reducer";
-import {AppRootStateType} from "../../app/store";
+import {appDispatchType, AppRootStateType, useAppDispatch} from "../../app/store";
 import {Navigate} from "react-router-dom";
 import {LoginParamsType} from "../../api/todolists-api";
 import {fetchTodolistsTC} from "../TodolistsList/todolists-reducer";
+import {Simulate} from "react-dom/test-utils";
+
+
+type FormValuesType = {
+    email: string
+    password: string
+    rememberMe: boolean
+}
 
 export const Login = () => {
 
-  const dispatch = useDispatch()
-   const isLoggedIn = useSelector<AppRootStateType, boolean>( state=> state.login.isLoggedIn)
+    //const dispatch: appDispatchType = useDispatch()
+    const dispatch = useAppDispatch()
+    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.login.isLoggedIn)
 
 
-        let formik = useFormik({
+    let formik = useFormik({
         initialValues: {
             email: '',
             password: '',
             rememberMe: false
         },
-        validate:(values) => {
-            const errors :Partial<Omit<LoginParamsType, 'captcha'>> = {};
+        validate: (values) => {
+            const errors: Partial<Omit<LoginParamsType, 'captcha'>> = {};
             if (!values.email) {
                 errors.email = 'Required';
             } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
                 errors.email = 'Invalid email address';
             }
-            if(!values.password) {
+            if (!values.password) {
                 errors.password = 'Required';
-            } else if( values.password.length<6 ){
+            } else if (values.password.length < 6) {
                 errors.password = 'Must be 6 characters or more'
             }
             return errors
         },
-        onSubmit: values => {
-            dispatch(loginTC(values))
+        onSubmit: async (values: FormValuesType, formikHelpers: FormikHelpers<FormValuesType>) => {
+            const action = await dispatch(loginTC(values))
+
+            if (loginTC.rejected.match(action)) {
+                if (action.payload?.fieldsErrors?.length) {
+                    const error = action.payload.fieldsErrors[0]
+                    formikHelpers.setFieldError(error.field, error.error)
+                }
+            }
             formik.resetForm()
         }
     })
 
-    useEffect(()=>{
-        if(!isLoggedIn){
+    useEffect(() => {
+        if (!isLoggedIn) {
             return
         }
         dispatch(fetchTodolistsTC())
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
+    }, [])
 
-    if(isLoggedIn) {
-        return <Navigate to={'/'} />
+    if (isLoggedIn) {
+        return <Navigate to={'/'}/>
     }
 
     return <Grid container justifyContent={'center'}>
@@ -76,11 +92,12 @@ export const Login = () => {
                     <FormGroup>
                         <TextField label="Email"
                                    margin="normal"
-                            {...formik.getFieldProps("email")}
-                                   /*onChange={formik.handleChange}
-                                   value={formik.values.email}
-                        onBlur={formik.handleBlur}*//>
-                        {formik.touched.email && formik.errors.email ? <div style={{color: 'red'}}>{formik.errors.email}</div>: null }
+                                   {...formik.getFieldProps("email")}
+                            /*onChange={formik.handleChange}
+                            value={formik.values.email}
+                 onBlur={formik.handleBlur}*//>
+                        {formik.touched.email && formik.errors.email ?
+                            <div style={{color: 'red'}}>{formik.errors.email}</div> : null}
                         <TextField type="password"
                                    label="Password"
                                    margin="normal"
@@ -90,12 +107,13 @@ export const Login = () => {
                                    value={formik.values.password}
                                    onBlur={formik.handleBlur}
                         />
-                        {formik.touched.password && formik.errors.password && <div style={{color: 'red'}}>{formik.errors.password}</div> }
+                        {formik.touched.password && formik.errors.password &&
+                        <div style={{color: 'red'}}>{formik.errors.password}</div>}
                         <FormControlLabel label={'Remember me'}
-                                           control={<Checkbox
+                                          control={<Checkbox
                                               {...formik.getFieldProps("rememberMe")}
-                                           /> }
-                                              />
+                                          />}
+                        />
                         <Button type={'submit'} variant={'contained'} color={'primary'}>
                             Login
                         </Button>
